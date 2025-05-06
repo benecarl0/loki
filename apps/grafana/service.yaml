@@ -1,0 +1,17 @@
+apiVersion: v1  # Define que estamos usando la versión 'v1' de la API para el recurso 'Service'.
+kind: Service  # Especifica que estamos creando un 'Service', que es un recurso que expone una aplicación corriendo en un conjunto de pods.
+metadata:
+  name: grafana-service  # El nombre del servicio será 'grafana-service'.
+  namespace: default  # El servicio se creará en el namespace 'default'.
+  labels:
+    app: grafana  # Etiqueta para identificar que este servicio está relacionado con la aplicación Grafana.
+
+spec:  # Especificaciones del servicio.
+  type: LoadBalancer  # El tipo de servicio es 'LoadBalancer', lo que significa que es accesible desde fuera del clúster.
+  ports:  # Define los puertos que el servicio utilizará.
+    - name: web  # Nombre del puerto, en este caso 'web'.
+      protocol: TCP  # El protocolo de comunicación será TCP.
+      port: 80  # El servicio escuchará en el puerto 80 dentro del clúster.
+      targetPort: 3000  # El tráfico que llega al puerto 80 se redirige al puerto 3000 del pod (puerto donde Grafana escucha).
+  selector:  # Define cómo el servicio seleccionará los pods a los que se conectará.
+      app: grafana  # El servicio selecciona los pods con la etiqueta 'app: grafana' (es decir, los pods de Grafana).

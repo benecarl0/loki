@@ -1,0 +1,50 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loki-deployment                 # Nombre del Deployment que desplegará el pod de Loki
+  namespace: monitoring                 # Namespace donde se desplegará Loki
+  labels:
+    app: loki                           # Etiqueta utilizada para identificar los recursos relacionados
+
+spec:
+  selector:
+    matchLabels:
+      app: loki                         # Selecciona los pods con esta etiqueta para gestionar el Deployment
+
+  replicas: 1                           # Solo una réplica de Loki (modo monolítico / standalone)
+
+  template:
+    metadata:
+      labels:
+        app: loki                       # Etiquetas aplicadas al pod creado por este Deployment
+
+    spec:
+      volumes:
+        - name: loki-config-yaml        # Volumen que contiene el archivo de configuración de Loki
+          configMap:
+            name: loki-config-yaml      # Nombre del ConfigMap que contiene local-config.yaml
+
+        - name: loki-data               # Volumen persistente para almacenar índices y chunks
+          persistentVolumeClaim:
+            claimName: loki-pv-claim    # PVC previamente creado para Loki (almacenamiento en /tmp/loki)
+
+      restartPolicy: Always             # Reiniciar el pod automáticamente si falla
+
+      containers:
+        - name: loki-container          # Nombre del contenedor dentro del pod
+          image: grafana/loki:latest    # Imagen de Loki desde Docker Hub (última versión disponible)
+          imagePullPolicy: Always       # Forzar a Kubernetes a comprobar siempre si hay nueva versión
+
+          args: ["-config.file=/etc/loki/local-config.yaml"]
+          # Instrucción para que Loki cargue la configuración desde el archivo montado en /etc/loki
+
+          stdin: true                   # Permite la entrada estándar interactiva (útil en debug)
+          tty: true                     # Habilita un pseudo-TTY para interacción si se entra al contenedor
+
+          ports:
+            - containerPort: 3100       # Expone el puerto HTTP de Loki dentro del contenedor
+
+          volumeMounts:
+            - name: loki-data
+              mountPath: /tmp/loki      # Directorio de trabajo de Loki donde se guardan índices y chunks

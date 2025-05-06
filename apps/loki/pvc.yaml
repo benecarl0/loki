@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: loki-pv-claim               # Nombre del PVC que se usará para almacenar los datos de Loki
+  namespace: monitoring             # Namespace donde se crea el PVC, debe coincidir con el del Deployment de Loki
+  labels:
+    app: loki                       # Etiqueta que relaciona este PVC con la aplicación Loki
+
+spec:
+  accessModes:
+    - ReadWriteOnce                # Solo un nodo puede montar el volumen en modo lectura/escritura a la vez
+
+  resources:
+    requests:
+      storage: 10Gi                # Solicita 10 GiB de almacenamiento para datos de Loki (índices y chunks)
+  storageClassName: do-block-storage # Clase de almacenamiento usada (ej. en DigitalOcean o entornos personalizados)

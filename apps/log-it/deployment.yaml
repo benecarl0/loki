@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-it-deployment
+  namespace: default
+  labels:
+    app: log-it
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: log-it
+  template:
+    metadata:
+      labels:
+        app: log-it
+    spec:
+      containers:
+        - name: log-it-container
+          image: busybox
+          command: ["sh", "-c", "while true; do echo '✅ log-it funcionando desde busybox'; sleep 5; done"]

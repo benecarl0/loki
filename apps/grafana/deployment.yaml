@@ -1,0 +1,20 @@
+apiVersion: apps/v1  
+kind: Deployment  # El tipo de recurso es un 'Deployment', que se usa para gestionar pods en Kubernetes de forma escalable.
+metadata:
+  name: grafana-deployment  # El nombre del Deployment será 'grafana-deployment'.
+  labels:
+    app: grafana  # Etiqueta 'app: grafana' para identificar este Deployment como relacionado con la aplicación Grafana.
+spec:
+  selector:
+    matchLabels:
+      app: grafana  # El selector asegura que el Deployment controle los pods que tienen la etiqueta 'app: grafana'.
+  replicas: 1  # El número de réplicas (pods) que se quieren ejecutar. En este caso, se creará un solo pod de Grafana.
+  template:  # Define el pod que será gestionado por el Deployment.
+    metadata:
+      labels:
+        app: grafana  # Los pods generados por este Deployment tendrán la etiqueta 'app: grafana'.
+    spec:
+      containers:  # Define los contenedores que estarán dentro del pod.
+      - name: grafana-container  # El nombre del contenedor será 'grafana-container'.
+        image: grafana/grafana:latest  # Utiliza la imagen 'grafana/grafana:latest' desde Docker Hub.
+        imagePullPolicy: IfNotPresent  # La política de descarga de la imagen será 'IfNotPresent', lo que significa que Kubernetes solo descargará la imagen si no está ya en el nodo.
