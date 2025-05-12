@@ -21,7 +21,7 @@ values.yaml: |
 
   persistence:
     enabled: true
-    storageClassName: standard 
+    storageClassName: do-block-storage
     accessModes:
       - ReadWriteOnce
     size: 5Gi
