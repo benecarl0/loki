@@ -4,16 +4,24 @@ metadata:
   name: grafana-values
   namespace: monitoring
 data:
-  values.yaml: |
-    replicaCount: 1
-    image:
-      repository: grafana/grafana
-      tag: latest
-      pullPolicy: IfNotPresent
-    adminPassword: admin
-    service:
-      type: ClusterIP
-      port: 80
-      targetPort: 3000
-    persistence:
-      enabled: false
+values.yaml: |
+  replicaCount: 1
+
+  image:
+    repository: grafana/grafana
+    tag: latest
+    pullPolicy: IfNotPresent
+
+  adminPassword: admin
+
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 3000
+
+  persistence:
+    enabled: true
+    storageClassName: standard 
+    accessModes:
+      - ReadWriteOnce
+    size: 5Gi
